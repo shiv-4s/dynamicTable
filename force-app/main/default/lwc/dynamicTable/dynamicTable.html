@@ -15,7 +15,7 @@
                             <template for:each={fetchitem} for:item="item">
                                 <td key={item}>
                                     <lightning-formatted-text
-                                        data-id={fetchitem.Id}
+                                        data-id={item}
                                         value={item}
                                         onclick={goToRecordPage}
                                     ></lightning-formatted-text>

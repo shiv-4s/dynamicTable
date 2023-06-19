@@ -20,4 +20,15 @@ public with sharing class DynamicTableController {
             throw new AuraHandledException(e.getMessage());
         }
     }
+
+    @AuraEnabled(cacheable=true)
+    public static List<String> fetchSObjectFieldName(){
+        try {
+            DynamicTable__mdt dynamicMdt = DynamicTable__mdt.getInstance('recordv1');            
+            List<String> reqFields = dynamicMdt.Query__c.split(',');
+            return reqFields;
+        } catch (Exception e) {
+            throw new AuraHandledException(e.getMessage());
+        }
+    }
 }
