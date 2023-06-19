@@ -15,18 +15,31 @@ export default class DynamicTable extends NavigationMixin(LightningElement) {
     fieldList;
     recordId;
     fieldName;
-
+    fullData= [];
+    fieldName;
+    nameRec;
     //wire funtion to fetch the record from apex method fetchSObjectRecord
     @wire(fetchSObjectRecord)
     wiredSObject({data, error}){ 
         if(data){
-           let setField = new Set();
-            this.fetchedData = data;
+            this.fetchedData = JSON.parse(JSON.stringify(data));
             this.fetchedData.forEach(element => {
+                var rec =[];
                 this.fieldName = Object.keys(element);
+                this.fieldName.forEach(list => {
+                    if(!(Object.hasOwn(element,list))){
+                        let obj = new Object();
+                        obj[list] = '';
+                        Object.assign(element,obj);
+                    }
+                    rec.push(element[list]);
+                })
+                this.fullData.push(rec);
+                console.log('full data ',this.fullData);
             });
+            
             console.log("++++++++fetchedData+++++++ " + JSON.stringify(this.fetchedData));
-            console.log("++++++++fieldName+++++++ " + JSON.stringify(this.fieldName));
+            console.log("++++++++fetchedData+++++++ " + JSON.stringify(this.fieldName));
 
         }
         else if(error){
@@ -41,12 +54,11 @@ export default class DynamicTable extends NavigationMixin(LightningElement) {
                 this.dispatchEvent(event);
         }
     }
-    
 
     //method to navigate on a particular record in table
     goToRecordPage(event){
-        this.recordId = event.target.dataset.id;
-        console.log("+++++++ " +  this.recordId);
+        this.recordId = event.target.dataset.Id;
+        console.log("+++++++ " +  event.target);
           // Generate a URL to a User record page
           this[NavigationMixin.Navigate]({
             type: 'standard__recordPage',

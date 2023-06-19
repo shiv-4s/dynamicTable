@@ -10,10 +10,16 @@
                     </template>
                 </thead>
                 <tbody>
-                    <template for:each={fetchedData} for:item="fetchData">
-                        <tr key={fetchData.Id}>
-                            <template for:each={fieldName} for:item="item">
-                                <td key={item}><a data-id={fetchData.Id} onclick={goToRecordPage}>{item}</a></td>
+                    <template for:each={fullData} for:item="fetchitem">
+                        <tr key={fetchitem.Id}>
+                            <template for:each={fetchitem} for:item="item">
+                                <td key={item}>
+                                    <lightning-formatted-text
+                                        data-id={fetchitem.Id}
+                                        value={item}
+                                        onclick={goToRecordPage}
+                                    ></lightning-formatted-text>
+                                </td>
                             </template>
                         </tr>
                     </template>
