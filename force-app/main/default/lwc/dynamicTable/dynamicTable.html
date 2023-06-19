@@ -3,17 +3,17 @@
         <div class="slds-m-around_medium">
             <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped" aria-label="Example table of Opportunities with striped rows">
                 <thead>
-                    <template for:each={fieldList} for:item="fielditem">
+                    <template for:each={fieldName} for:item="fielditem">
                         <th key={fielditem} class="" scope="col">
                             <div class="slds-truncate" title="Name">{fielditem}</div>
                         </th>
-                    </template> 
+                    </template>
                 </thead>
                 <tbody>
                     <template for:each={fetchedData} for:item="fetchData">
                         <tr key={fetchData.Id}>
-                            <template for:each={fieldList} for:item="fielditem">
-                                <td key={fielditem}><lightning-formatted-text value={fetchData.fielditem}></lightning-formatted-text></td>
+                            <template for:each={fieldName} for:item="item">
+                                <td key={item}><a data-id={fetchData.Id} onclick={goToRecordPage}>{item}</a></td>
                             </template>
                         </tr>
                     </template>
