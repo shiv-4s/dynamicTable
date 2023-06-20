@@ -7,13 +7,11 @@
 
 public with sharing class DynamicTableController {
     @AuraEnabled(cacheable=true)
-    public static List<Object> fetchSObjectRecord(){
+    public static List<Object> fetchSObjectRecord(String objectName, String fields){
         try {
-            DynamicTable__mdt dynamicMdt = DynamicTable__mdt.getInstance('recordv1');   
-            String queryStr = 'SELECT '+ dynamicMdt.Query__c + ' FROM ' + dynamicMdt.Object_Type__c + ' LIMIT 10';
-            System.debug('++++++++queryStr+++++++ ' + queryStr);
+            String queryStr = 'SELECT '+ fields + ' FROM ' + objectName + ' LIMIT 10';
             List<Object> sobjList = Database.query(queryStr);
-            System.debug('++++sobjList++++ ' + sobjList);
+            System.debug('+++++++sobjList+++++++ ' + sobjList);
             return sobjList;
         } 
         catch (Exception e) {
@@ -22,11 +20,13 @@ public with sharing class DynamicTableController {
     }
 
     @AuraEnabled(cacheable=true)
-    public static List<String> fetchSObjectFieldName(){
+    public static List<DynamicTable__mdt> fetchSObjectFieldName(){
+
         try {
-            DynamicTable__mdt dynamicMdt = DynamicTable__mdt.getInstance('recordv1');            
-            List<String> reqFields = dynamicMdt.Query__c.split(',');
-            return reqFields;
+            List<DynamicTable__mdt> queryValues = [SELECT Id,Object_Type__c,Query__c FROM DynamicTable__mdt];
+            System.debug('____________queryValues____________'+queryValues);
+            return queryValues;
+
         } catch (Exception e) {
             throw new AuraHandledException(e.getMessage());
         }
