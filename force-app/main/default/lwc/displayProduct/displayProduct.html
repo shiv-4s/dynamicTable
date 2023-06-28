@@ -1,0 +1,51 @@
+<template>
+    <lightning-card title="Products">
+        <lightning-input
+            class="selectcountry"
+            type="search"
+            value=""
+            onchange={handleProduct}
+        >
+        </lightning-input>
+        <template if:true={showValue}>
+            <template if:true={productName} >
+                <template for:each={result} for:item="objectitem">
+                    <div key={objectitem} class="slds-m-around_medium pointer">
+                        <lightning-formatted-text
+                        value={objectitem}
+                        onclick={selectSearchProduct}
+                        class="pointer"
+                        >
+                        </lightning-formatted-text>
+                    </div>
+                </template>
+            </template>
+        </template>
+        <article class="slds-card">
+            <template if:true={categoryProduct}>
+                <lightning-layout multiple-rows="true" pull-to-boundary="small" horizontal-align="space">
+                    <template for:each={categoryProduct} for:item="proditem">
+                        <div key={proditem.Id} class="grid-container">
+                            <div class="grid-item">
+                                <lightning-layout-item class="slds-var-p-around_x-small" padding="around-small">
+                                    <!-- Start bear tile -->
+                                    <lightning-card title={proditem.Name} class="prod-tile">
+                                        <div class="slds-var-p-horizontal_small bear-tile-body">
+                                            <div class="slds-media">
+                                                <div class="slds-media__figure">
+                                                    <img src={proditem.Image__c} data-id={proditem.Id} onclick={goToRecordPage}  class="prod-silhouette"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </lightning-card>
+                                    <p><strong>Name: </strong>{proditem.Name}</p>
+                                    <p><strong>Price: </strong>{proditem.Price__c} USD</p>
+                                </lightning-layout-item>
+                            </div>
+                        </div>
+                    </template>
+                </lightning-layout>
+            </template>
+        </article>
+	</lightning-card>
+</template>
