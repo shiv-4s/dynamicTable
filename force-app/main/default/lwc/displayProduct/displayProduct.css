@@ -1,0 +1,20 @@
+.prod-tile {
+	display: block;
+	border: 1px solid #d2955d;
+	border-radius: .25rem;
+	background-color: #fad2d2;
+}
+.prod-silhouette { 
+	height: 100px;
+	cursor: pointer;
+}
+.grid-item{
+	text-align: center;
+}
+.grid-container{
+	display: grid;
+	grid-template-columns: auto auto auto auto;
+}
+.pointer{
+	cursor: pointer;
+}
