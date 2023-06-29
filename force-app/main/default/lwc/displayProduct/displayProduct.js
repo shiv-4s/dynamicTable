@@ -1,4 +1,4 @@
-import { LightningElement, wire } from 'lwc';
+import { LightningElement, track, wire } from 'lwc';
 import getProductInfo from '@salesforce/apex/ProductController.getProductInfo';
 import getPickListValuesIntoList from '@salesforce/apex/PickListController.getPickListValuesIntoList';
 import { NavigationMixin } from 'lightning/navigation';
@@ -8,11 +8,14 @@ export default class DisplayProduct extends NavigationMixin(LightningElement) {
     productRecord;
     error;
     productId;
-    pickListValue = [];
-    options;
-    productName;
-    showValue;
+    options = []; 
     categoryProduct=[];
+    filterProduct=[];
+    currentPage = 1;
+    totalPage = 0;
+    recordSize = 5;
+    selectedItem;
+    @track visibleRecords=[];
 
     /**
      * 
@@ -21,7 +24,6 @@ export default class DisplayProduct extends NavigationMixin(LightningElement) {
     @wire(getProductInfo)
     wiredProduct({data, error}){
         if(data){
-            console.log("+++++data++++++ "  + JSON.stringify(data));
             this.productRecord = JSON.parse(JSON.stringify(data));
             this.error = undefined;
         }
@@ -39,8 +41,13 @@ export default class DisplayProduct extends NavigationMixin(LightningElement) {
     @wire(getPickListValuesIntoList, {objectType : 'Product__c', selectedField : 'Category__c'})
     wiredCountry({data, error}){
         if(data){
-            this.pickListValue = JSON.parse(JSON.stringify(data));
-            console.log("+++pickListValue++++++", this.pickListValue);
+            this.options = data.map(item=>{
+                return {
+                    label: item,
+                    value: item
+                }
+            })
+            console.log("+++++options+++++ " + JSON.stringify(this.options));
         }
         else if(error){
             this.error = error;
@@ -66,23 +73,52 @@ export default class DisplayProduct extends NavigationMixin(LightningElement) {
     }
 
     handleProduct(event){
-        this.productName = event.target.value;
-        this.showValue = true;
-        this.result = this.pickListValue.filter((picklistOption) =>
-        picklistOption.includes(this.productName));
-    }
-
-    selectSearchProduct(event){
-        this.template.querySelector('.selectcountry').value = event.target.value;
-        this.showValue = false;
+        this.selectedItem = event.target.value;
         console.log("+++++selectedValue+++++++ " , event.target.value);
+        this.previousRecordCount = 5;
         this.categoryProduct = [];
         this.productRecord.forEach(element => {
             if(element.Category__c === event.target.value){
                 this.categoryProduct.push(element);
             }
             });
-        console.log("++++++categoryProduct+++++++ " , this.categoryProduct);
+        //this.filterProduct = this.categoryProduct.slice(0, this.previousRecordCount);
+        this.currentPage =1;
+        this.recordSize = Number(this.recordSize);
+        this.totalPage = Math.ceil(this.categoryProduct.length/this.recordSize);
+        console.log("++++++recordSize+++++++ " , this.recordSize);
+        console.log("++++++totalPage+++++++ " , this.totalPage);
+        this.updateRecords()
+       
+
+    }
+
+    previousHandler(){
+        if(this.currentPage>1){
+            this.currentPage = this.currentPage-1
+            this.updateRecords()
+        }
+    }
+    nextHandler(){
+        if(this.currentPage < this.totalPage){
+            this.currentPage = this.currentPage+1;
+            this.updateRecords();
+        }
+    }
+    updateRecords(){
+        const start = (this.currentPage-1)*this.recordSize
+        const end = this.recordSize*this.currentPage
+        console.log('===start==', start);
+        console.log('==end==', end);
+        this.visibleRecords = this.categoryProduct.slice(start, end);
+        console.log('this.visibleRecords=====', JSON.stringify(this.visibleRecords));
+    }
+
+    get disablePrevious(){
+        return this.currentPage<=1
+    }
+    get disableNext(){
+        return this.currentPage>=this.totalPage
     }
 
 }

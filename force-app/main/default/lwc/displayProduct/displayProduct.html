@@ -1,30 +1,19 @@
 <template>
     <lightning-card title="Products">
-        <lightning-input
-            class="selectcountry"
-            type="search"
-            value=""
+        <div class="slds-m-left_medium">
+            <lightning-combobox
+            options={options}
             onchange={handleProduct}
-        >
-        </lightning-input>
-        <template if:true={showValue}>
-            <template if:true={productName} >
-                <template for:each={result} for:item="objectitem">
-                    <div key={objectitem} class="slds-m-around_medium pointer">
-                        <lightning-formatted-text
-                        value={objectitem}
-                        onclick={selectSearchProduct}
-                        class="pointer"
-                        >
-                        </lightning-formatted-text>
-                    </div>
-                </template>
-            </template>
-        </template>
+            class="selectcountry"
+            value={selectedItem}
+            style="color:grey; width:150px"
+            >
+            </lightning-combobox>
+        </div>
         <article class="slds-card">
-            <template if:true={categoryProduct}>
+            <template if:true={visibleRecords}>
                 <lightning-layout multiple-rows="true" pull-to-boundary="small" horizontal-align="space">
-                    <template for:each={categoryProduct} for:item="proditem">
+                    <template for:each={visibleRecords} for:item="proditem">
                         <div key={proditem.Id} class="grid-container">
                             <div class="grid-item">
                                 <lightning-layout-item class="slds-var-p-around_x-small" padding="around-small">
@@ -47,5 +36,33 @@
                 </lightning-layout>
             </template>
         </article>
+        <template if:true={selectedItem}>
+            <div class="slds-clearfix">
+                <div class="slds-float_right">
+                    <div class="slds-m-right_small">
+                        <lightning-button
+                        disabled={disableNext}
+                        class="newproductitem"
+                        value=""
+                        label="Next"
+                        onclick={nextHandler}
+                        >
+                        </lightning-button>
+                    </div>
+                </div>
+                <div class="slds-float_left">
+                    <div class="slds-m-left_small">
+                        <lightning-button
+                        disabled={disablePrevious}
+                        class="oldproductitem"
+                        value=""
+                        label="Previous"
+                        onclick={previousHandler}
+                        >
+                        </lightning-button>
+                    </div>
+                </div>
+            </div>
+        </template>
 	</lightning-card>
 </template>
